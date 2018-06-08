@@ -11,4 +11,8 @@
       yum:
         name: libselinux-python
         state: present
+    - name: download java
+      become: yes
+      become_method: sudo
+      command: curl {{ download_url }} -O {{ java_archivve }}
   
