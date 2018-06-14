@@ -2,11 +2,29 @@
 - hosts: hdptomcat9
   name: deploy files
   tasks:
-    - name: copy ecs local to remote
+    - name: copy tomcat9 local to remote
       become: yes
       become_method: sudo
       copy:
-        src: files/
+        src: files/apache-tomcat-9.0.8.tar.gz
+        dest: /opt
+        owner: root
+        group: root
+        mode: 0755
+    - name: copy eclipse local to remote
+      become: yes
+      become_method: sudo
+      copy:
+        src: files/eclipse
+        dest: /opt
+        owner: root
+        group: root
+        mode: 0755
+    - name: copy java8u151 local to remote
+      become: yes
+      become_method: sudo
+      copy:
+        src: files/jdk-8u151-linux-x64.tar.gz
         dest: /opt
         owner: root
         group: root
