@@ -1,0 +1,54 @@
+---
+- hosts: jce
+  name: configure JCE and test
+  tasks:
+    - name: alternatives install
+      become: yes
+      become_method: sudo
+      command: 'alternatives --install "/usr/bin/java" "java" "{{java_name}}/bin/java" 50'
+      #when: jdk8.stat.isdir is defined
+    
+    - name: install libselinux-python dependency
+      become: yes
+      become_method: sudo
+      yum:
+        name: "{{ item }}"
+        #name: libselinux-python
+        state: present
+      with_items:
+        - libselinux-python
+        - unzip
+    
+    - name: update JCE policy to unlimited
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest=/usr/java/jdk1.8.0_151/jre/lib/security/java.security
+        line="crypto.policy=unlimited"
+        #regexp="^\[\[ -s \\$HOME/\.pythonbrew"
+        #owner=root
+        #state=present
+        #insertafter=EOF
+        #reate=True
+    
+    - name: copy JCE Testing files
+      become: yes
+      become_method: sudo
+      copy:
+        src: files/{{item}}
+        dest: /opt
+      with_items:
+        - bcprov-jdk15on-158.jar
+        - JCETest.java
+        - JCETest.class
+        
+    - name: run JCE Test to Ensure Unlimited Crypto Policy
+      command: java -cp bcprov-jdk15on-158.jar:. JCETest 
+      args:
+        chdir: /opt
+      register: JCETest
+    
+    - name: printout JCETest Results
+      debug: msg={{JCETest.stdout_lines}}
+    #- name: jce 8 policy status
+    #  stat: path=/opt/UnlimitedJCEPolicyJDK8

@@ -1,0 +1,13 @@
+---
+- hosts: hdptomcat9
+  name: deploy files
+  tasks:
+    - name: copy ecs local to remote
+      become: yes
+      become_method: sudo
+      copy:
+        src: files/
+        dest: /opt
+        owner: root
+        group: root
+        mode: 0755
