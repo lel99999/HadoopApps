@@ -11,6 +11,20 @@
       yum:
         name: libselinux-python
         state: present
+    - name: copy tomcat9 to /opt
+      become: yes
+      become_method: sudo
+      copy:
+        src: files/apache-tomcat-9.0.8.tar.gz
+        dest: /opt
+        owner: root
+        group: root
+        mode: 0755
+    - name: unpack tomcat
+      become: yes
+      become_method: sudo
+      command: tar xvf /opt/apache-tomcat-9.0.8.tar.gz
+      
     - name: download java
       become: yes
       become_method: sudo
@@ -20,7 +34,7 @@
       become_method: sdo
       file: state=directory path=/usr/java
 #     when: not jdk8.stat.exists  
-    - name: unpakc jdk8
+    - name: unpack jdk8
       become: yes
       become_method: sudo
       unarchive:
