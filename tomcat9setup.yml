@@ -24,7 +24,6 @@
       become: yes
       become_method: sudo
       command: tar xvf /opt/apache-tomcat-9.0.8.tar.gz
-      
     - name: download java
       become: yes
       become_method: sudo
